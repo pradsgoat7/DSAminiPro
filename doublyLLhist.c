@@ -207,10 +207,10 @@ void shortenUrlTUI(struct browserHistory* history) {
         return;
     }
     
-    // We need to exit ncurses to see the API response from the callback
+  
     endwin();
     printf("Contacting API...\n");
-    shortenUrl(history->current->url); // Assuming you have your original shortenUrl function
+    shortenUrl(history->current->url); 
     
     printf("\nPress any key to return to the menu...");
     getch();
@@ -242,11 +242,11 @@ void draw_menu(int highlight) {
         int x = (width / 2) - (strlen(choices[i]) / 2);
         
         if (i == highlight) {
-            attron(A_REVERSE); // Highlight the current choice
+            attron(A_REVERSE);
         }
         mvprintw(y, x, "%s", choices[i]);
         if (i == highlight) {
-            attroff(A_REVERSE); // Turn off highlighting
+            attroff(A_REVERSE); 
         }
     }
     refresh();
@@ -256,7 +256,7 @@ int main() {
     struct browserHistory myBrowser = {NULL, NULL, NULL};
     char url[MAX_URL_LENGTH];
 
-    // --- ncurses setup ---
+    
     initscr();
     cbreak();
     noecho();
@@ -265,30 +265,29 @@ int main() {
     int highlight = 0;
     int choice = 0;
 
-    // --- The Main TUI Loop ---
+    
     while(1) {
         draw_menu(highlight);
-        int input = getch(); // Wait for a key press
-
+        int input = getch(); 
         switch(input) {
             case KEY_UP:
                 highlight--;
-                if (highlight < 0) highlight = 7; // Wrap around
+                if (highlight < 0) highlight = 7; 
                 break;
             case KEY_DOWN:
                 highlight++;
-                if (highlight > 7) highlight = 0; // Wrap around
+                if (highlight > 7) highlight = 0; 
                 break;
-            case 10: // The Enter key
+            case 10: 
                 choice = highlight + 1;
                 break;
             default:
                 break;
         }
 
-        // If the user pressed Enter, 'choice' will be set.
+        
         if (choice != 0) {
-            // Temporarily stop ncurses to get user text input or show scrolled output
+           
             if (choice == 1 || choice == 4 || choice == 5 || choice == 7) {
                 endwin();
                 printf("\n");
@@ -312,25 +311,25 @@ int main() {
                         break;
                 }
 
-                if (choice != 7) { // Don't wait for key press if API already did
+                if (choice != 7) { 
                     printf("\nPress any key to return to the menu...");
                     getch(); // Wait for user
                 }
 
-                // Re-initialize ncurses to go back to the TUI menu
+                
                 initscr();
                 cbreak();
                 noecho();
                 keypad(stdscr, TRUE);
 
             } else {
-                // For functions that don't need text input, just call them
+               
                 switch(choice) {
                     case 2: goBack(&myBrowser); break;
                     case 3: goForward(&myBrowser); break;
                     case 6: deleteEntireHistory(&myBrowser); break;
                 }
-                // Pause to show the result before redrawing the menu
+                
                 mvprintw(LINES - 2, 1, "Action complete. Press any key...");
                 getch();
             }
@@ -342,10 +341,10 @@ int main() {
         }
     }
 
-    // --- Cleanup ---
+    
     endwin();
     deleteEntireHistory(&myBrowser); 
     printf("Exited successfully.\n");
     
     return 0;
-}
+} 
